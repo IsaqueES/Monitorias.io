@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11"
+  },
+  "type": "module",
+  "scripts": {
+    "backend": "node --watch server.js"
+  },
+  "devDependencies": {
+    "prisma": "^7.1.0"
+  }
+}
