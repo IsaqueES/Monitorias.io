@@ -1,0 +1,14 @@
+# Ambiente Virtual (O culpado dos 4k arquivos)
+venv/
+.venv/
+env/
+
+# Arquivos compilados do Python (lixo)
+__pycache__/
+*.py[cod]
+
+# Variáveis de Ambiente (SEGURANÇA MÁXIMA - NÃO REMOVA ISSO)
+.env
+
+# Configurações do VS Code (Opcional, mas recomendado)
+.vscode/

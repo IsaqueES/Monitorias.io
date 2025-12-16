@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block content %}
+<div class="max-w-4xl mx-auto py-12">
+  <div class="text-center mb-16">
+    <h1 class="text-4xl font-bold mb-4 text-primary">Sobre Nós</h1>
+    <p class="text-gray-400 text-lg">
+      Conectando conhecimento e alunos através da tecnologia.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-12 items-center">
+    <div
+      class="bg-card p-8 rounded-2xl border border-gray-800 text-center hover:border-primary transition-colors"
+    >
+      <h3 class="text-6xl font-bold text-white mb-2">+100k</h3>
+      <p class="text-purple-400 uppercase tracking-widest text-sm font-bold">
+        Alunos Ajudados
+      </p>
+    </div>
+
+    <div class="space-y-6 text-gray-300 leading-relaxed">
+      <p>
+        A plataforma de Monitoria nasceu da necessidade de organizar e
+        democratizar o acesso ao reforço escolar. Nossa missão é facilitar o
+        encontro entre quem quer ensinar e quem precisa aprender.
+      </p>
+      <div class="border-l-4 border-primary pl-4">
+        <p class="italic text-white">
+          "A educação é a arma mais poderosa que você pode usar para mudar o
+          mundo."
+        </p>
+      </div>
+      <div class="pt-4">
+        <p class="text-sm text-gray-500">Criador & Desenvolvedor Líder</p>
+        <p class="text-xl font-bold text-white">Isaque</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monitoria Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              dark: "#0a0a0a",
+              card: "#121212",
+              primary: "#8b5cf6",
+              primaryHover: "#7c3aed",
+              secondary: "#a1a1aa",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body::-webkit-scrollbar {
+        width: 8px;
+      }
+      body::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+      body::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 4px;
+      }
+      body::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-dark text-white font-sans antialiased min-h-screen flex flex-col"
+  >
+    <nav
+      class="border-b border-gray-800 bg-black/50 backdrop-blur-md sticky top-0 z-50"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div
+            class="flex-shrink-0 flex items-center gap-2 cursor-pointer"
+            onclick="window.location.href='/home{% if user %}?user_id={{ user.id }}{% endif %}'"
+          >
+            <div
+              class="w-8 h-8 bg-gradient-to-br from-primary to-purple-900 rounded-lg flex items-center justify-center"
+            >
+              <span class="font-bold text-white">M</span>
+            </div>
+            <span class="font-bold text-xl tracking-tight hidden sm:block"
+              >Monitoria<span class="text-primary">.io</span></span
+            >
+          </div>
+
+          <div class="flex items-center gap-6">
+            <a
+              href="/home{% if user %}?user_id={{ user.id }}{% endif %}"
+              class="text-gray-300 hover:text-primary transition-colors text-sm font-medium"
+              >Home</a
+            >
+            <a
+              href="/about{% if user %}?user_id={{ user.id }}{% endif %}"
+              class="text-gray-300 hover:text-primary transition-colors text-sm font-medium"
+              >About</a
+            >
+
+            {% if user %}
+            <a href="/user/id={{ user.id }}" class="group relative">
+              <div
+                class="h-9 w-9 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary transition-all"
+              >
+                <img
+                  src="{{ user.profile_image }}"
+                  alt="User"
+                  class="h-full w-full object-cover"
+                />
+              </div>
+            </a>
+            {% else %}
+            <a
+              href="/login"
+              class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md text-sm font-medium transition-all shadow-lg shadow-purple-900/20"
+            >
+              Entrar
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer
+      class="border-t border-gray-900 py-6 text-center text-gray-600 text-sm"
+    >
+      <p>&copy; 2025 Monitoria Manager. Criado por Isaque.</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,417 @@
+{% extends "base.html" %} {% block content %}
+<div class="max-w-7xl mx-auto py-10 px-4">
+  <div
+    class="mb-10 flex flex-col md:flex-row justify-between items-center gap-4"
+  >
+    <div>
+      <h1 class="text-4xl font-bold text-white mb-2">Painel Administrativo</h1>
+      <p class="text-gray-400">Gerenciamento completo do sistema.</p>
+    </div>
+    <input type="hidden" id="adminSecret" value="{{ admin_secret }}" />
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+    <div
+      class="bg-card border border-gray-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group"
+    >
+      <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-primary">✎</span>
+          <span id="subTitle">Nova Matéria</span>
+        </h2>
+        <button
+          id="subCancel"
+          onclick="resetForm('subject')"
+          class="hidden text-xs text-red-400 hover:text-red-300 border border-red-900 px-2 py-1 rounded"
+        >
+          Cancelar
+        </button>
+      </div>
+
+      <form id="subjectForm" class="space-y-4">
+        <input type="hidden" id="subId" />
+        <input
+          type="text"
+          id="subName"
+          placeholder="Nome (Ex: História)"
+          class="w-full bg-dark border border-gray-700 rounded p-3 text-white focus:border-primary outline-none transition-all"
+        />
+        <input
+          type="text"
+          id="subImg"
+          placeholder="URL da Imagem"
+          class="w-full bg-dark border border-gray-700 rounded p-3 text-white focus:border-primary outline-none transition-all"
+        />
+        <button
+          type="button"
+          id="subBtn"
+          onclick="saveSubject()"
+          class="w-full bg-primary hover:bg-primaryHover text-white font-bold py-3 rounded transition-all shadow-lg shadow-purple-900/20"
+        >
+          Criar Matéria
+        </button>
+      </form>
+    </div>
+
+    <div
+      class="bg-card border border-gray-800 rounded-2xl p-6 shadow-xl relative overflow-hidden group"
+    >
+      <div class="absolute top-0 left-0 w-full h-1 bg-green-500"></div>
+
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-green-500">✎</span>
+          <span id="monTitle">Nova Monitoria</span>
+        </h2>
+        <button
+          id="monCancel"
+          onclick="resetForm('monitoring')"
+          class="hidden text-xs text-red-400 hover:text-red-300 border border-red-900 px-2 py-1 rounded"
+        >
+          Cancelar
+        </button>
+      </div>
+
+      <form id="monitoringForm" class="space-y-3">
+        <input type="hidden" id="monId" />
+        <select
+          id="monSubSelect"
+          class="w-full bg-dark border border-gray-700 rounded p-3 text-white focus:border-green-500 outline-none"
+        >
+          <option value="" disabled selected>Selecione a Matéria...</option>
+        </select>
+        <div class="grid grid-cols-2 gap-3">
+          <input
+            type="text"
+            id="monName"
+            placeholder="Monitor"
+            class="bg-dark border border-gray-700 rounded p-3 text-white focus:border-green-500 outline-none"
+          />
+          <input
+            type="text"
+            id="monProf"
+            placeholder="Professor"
+            class="bg-dark border border-gray-700 rounded p-3 text-white focus:border-green-500 outline-none"
+          />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <input
+            type="text"
+            id="monDay"
+            placeholder="Dia"
+            class="bg-dark border border-gray-700 rounded p-3 text-white focus:border-green-500 outline-none"
+          />
+          <input
+            type="text"
+            id="monTime"
+            placeholder="Hora"
+            class="bg-dark border border-gray-700 rounded p-3 text-white focus:border-green-500 outline-none"
+          />
+        </div>
+        <input
+          type="text"
+          id="monRoom"
+          placeholder="Sala / Link"
+          class="w-full bg-dark border border-gray-700 rounded p-3 text-white focus:border-green-500 outline-none"
+        />
+        <button
+          type="button"
+          id="monBtn"
+          onclick="saveMonitoring()"
+          class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded transition-all shadow-lg shadow-green-900/20"
+        >
+          Adicionar Monitoria
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <h2 class="text-2xl font-bold text-white mb-6 border-l-4 border-white pl-3">
+    Itens Ativos
+  </h2>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-card border border-gray-800 rounded-xl p-6">
+      <h3 class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-wider">
+        Matérias
+      </h3>
+      <div
+        id="subjectsList"
+        class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scroll"
+      >
+        <p class="text-gray-600 text-sm">Carregando...</p>
+      </div>
+    </div>
+
+    <div class="bg-card border border-gray-800 rounded-xl p-6">
+      <h3 class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-wider">
+        Monitorias
+      </h3>
+      <div
+        id="monitoringsList"
+        class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scroll"
+      >
+        <p class="text-gray-600 text-sm">Carregando...</p>
+      </div>
+    </div>
+
+    <div class="bg-card border border-gray-800 rounded-xl p-6">
+      <h3
+        class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-wider text-yellow-500"
+      >
+        Inscrições Gerais
+      </h3>
+      <div
+        id="enrollmentsList"
+        class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scroll"
+      >
+        <p class="text-gray-600 text-sm">Carregando...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SECRET = document.getElementById("adminSecret").value;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    loadSubjects();
+    loadMonitorings();
+    loadEnrollments(); // Carrega a nova lista
+  });
+
+  // --- CARREGAR DADOS ---
+  async function loadSubjects() {
+    const res = await fetch("/api/subjects");
+    const data = await res.json();
+    const list = document.getElementById("subjectsList");
+    const select = document.getElementById("monSubSelect");
+
+    list.innerHTML = "";
+    const currentSelectValue = select.value;
+    select.innerHTML =
+      '<option value="" disabled>Selecione a Matéria...</option>';
+
+    data.forEach((sub) => {
+      list.innerHTML += `
+                <div class="flex justify-between items-center bg-dark p-3 rounded border border-gray-800 hover:border-gray-600 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <img src="${
+                          sub.image_url
+                        }" class="w-8 h-8 rounded object-cover bg-gray-700">
+                        <span class="text-white font-medium text-sm">${
+                          sub.name
+                        }</span>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick='startEditSubject(${JSON.stringify(
+                          sub
+                        )})' class="text-gray-500 hover:text-blue-400 p-1.5" title="Editar">✎</button>
+                        <button onclick="deleteItem('subjects', '${
+                          sub.id
+                        }')" class="text-gray-500 hover:text-red-500 p-1.5" title="Excluir">✕</button>
+                    </div>
+                </div>
+            `;
+      const selectedAttr = sub.id === currentSelectValue ? "selected" : "";
+      select.innerHTML += `<option value="${sub.id}" ${selectedAttr}>${sub.name}</option>`;
+    });
+  }
+
+  async function loadMonitorings() {
+    const res = await fetch("/api/monitorings");
+    const data = await res.json();
+    const list = document.getElementById("monitoringsList");
+    list.innerHTML = "";
+
+    data.forEach((mon) => {
+      const subjectName = mon.subjects ? mon.subjects.name : "Sem Matéria";
+      list.innerHTML += `
+                <div class="flex justify-between items-center bg-dark p-3 rounded border border-gray-800 hover:border-gray-600 transition-colors">
+                    <div>
+                        <p class="text-[10px] text-primary font-bold uppercase">${subjectName}</p>
+                        <p class="text-white font-bold text-sm">${
+                          mon.monitor_name
+                        }</p>
+                        <p class="text-gray-500 text-[10px]">${
+                          mon.schedule_day
+                        } - ${mon.schedule_time}</p>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick='startEditMonitoring(${JSON.stringify(
+                          mon
+                        )})' class="text-gray-500 hover:text-blue-400 p-1.5">✎</button>
+                        <button onclick="deleteItem('monitorings', '${
+                          mon.id
+                        }')" class="text-gray-500 hover:text-red-500 p-1.5">✕</button>
+                    </div>
+                </div>
+            `;
+    });
+  }
+
+  async function loadEnrollments() {
+    const res = await fetch("/api/enrollments");
+    const data = await res.json();
+    const list = document.getElementById("enrollmentsList");
+    list.innerHTML = "";
+
+    if (data.length === 0) {
+      list.innerHTML =
+        '<p class="text-gray-600 text-sm italic">Nenhuma inscrição.</p>';
+      return;
+    }
+
+    data.forEach((enr) => {
+      // Tratamento de segurança caso algum dado venha nulo
+      const userName = enr.users ? enr.users.name : "Usuário Desconhecido";
+      const userEmail = enr.users ? enr.users.email : "---";
+      const monName = enr.monitorings
+        ? enr.monitorings.monitor_name
+        : "Monitoria removida";
+      const subName =
+        enr.monitorings && enr.monitorings.subjects
+          ? enr.monitorings.subjects.name
+          : "";
+
+      list.innerHTML += `
+                <div class="flex justify-between items-center bg-dark p-3 rounded border border-gray-800 hover:border-yellow-900/30 transition-colors">
+                    <div class="overflow-hidden">
+                        <p class="text-white font-bold text-sm truncate">${userName}</p>
+                        <p class="text-gray-500 text-[10px] truncate">${userEmail}</p>
+                        <p class="text-yellow-500 text-[10px] mt-1 font-bold">Inscrito em: <span class="text-gray-300 font-normal">${monName} (${subName})</span></p>
+                    </div>
+                    <div>
+                        <button onclick="deleteEnrollment('${enr.user_id}', '${enr.monitoring_id}')" class="text-gray-500 hover:text-red-500 p-2 transition-colors" title="Cancelar Inscrição">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            `;
+    });
+  }
+
+  // --- LÓGICA DE EDIÇÃO ---
+  function startEditSubject(item) {
+    document.getElementById("subId").value = item.id;
+    document.getElementById("subName").value = item.name;
+    document.getElementById("subImg").value = item.image_url;
+    document.getElementById("subTitle").innerText = "Editar Matéria";
+    document.getElementById("subBtn").innerText = "Atualizar";
+    document.getElementById("subBtn").className =
+      "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded transition-all";
+    document.getElementById("subCancel").classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function startEditMonitoring(item) {
+    document.getElementById("monId").value = item.id;
+    document.getElementById("monSubSelect").value = item.subject_id;
+    document.getElementById("monName").value = item.monitor_name;
+    document.getElementById("monProf").value = item.professor_name;
+    document.getElementById("monRoom").value = item.room_or_link;
+    document.getElementById("monDay").value = item.schedule_day;
+    document.getElementById("monTime").value = item.schedule_time;
+    document.getElementById("monTitle").innerText = "Editar Monitoria";
+    document.getElementById("monBtn").innerText = "Atualizar";
+    document.getElementById("monBtn").className =
+      "w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded transition-all";
+    document.getElementById("monCancel").classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function resetForm(type) {
+    if (type === "subject") {
+      document.getElementById("subjectForm").reset();
+      document.getElementById("subId").value = "";
+      document.getElementById("subTitle").innerText = "Nova Matéria";
+      document.getElementById("subBtn").innerText = "Criar Matéria";
+      document.getElementById("subBtn").className =
+        "w-full bg-primary hover:bg-primaryHover text-white font-bold py-3 rounded transition-all shadow-lg shadow-purple-900/20";
+      document.getElementById("subCancel").classList.add("hidden");
+    } else {
+      document.getElementById("monitoringForm").reset();
+      document.getElementById("monId").value = "";
+      document.getElementById("monTitle").innerText = "Nova Monitoria";
+      document.getElementById("monBtn").innerText = "Adicionar Monitoria";
+      document.getElementById("monBtn").className =
+        "w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded transition-all shadow-lg shadow-green-900/20";
+      document.getElementById("monCancel").classList.add("hidden");
+    }
+  }
+
+  // --- SALVAR ---
+  async function saveSubject() {
+    const id = document.getElementById("subId").value;
+    const data = {
+      name: document.getElementById("subName").value,
+      image_url: document.getElementById("subImg").value,
+    };
+    const url = id
+      ? `/api/${SECRET}/subjects/${id}`
+      : `/api/${SECRET}/subjects`;
+    const method = id ? "PUT" : "POST";
+
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      resetForm("subject");
+      loadSubjects();
+    } else alert("Erro ao salvar.");
+  }
+
+  async function saveMonitoring() {
+    const id = document.getElementById("monId").value;
+    const data = {
+      subject_id: document.getElementById("monSubSelect").value,
+      monitor_name: document.getElementById("monName").value,
+      professor_name: document.getElementById("monProf").value,
+      room_or_link: document.getElementById("monRoom").value,
+      schedule_day: document.getElementById("monDay").value,
+      schedule_time: document.getElementById("monTime").value,
+    };
+    const url = id
+      ? `/api/${SECRET}/monitorings/${id}`
+      : `/api/${SECRET}/monitorings`;
+    const method = id ? "PUT" : "POST";
+
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      resetForm("monitoring");
+      loadMonitorings();
+    } else alert("Erro ao salvar.");
+  }
+
+  // --- DELETAR ITENS GENÉRICOS ---
+  async function deleteItem(type, id) {
+    if (!confirm("Deseja realmente excluir?")) return;
+    await fetch(`/api/${SECRET}/${type}/${id}`, { method: "DELETE" });
+    loadSubjects();
+    loadMonitorings();
+  }
+
+  // --- DELETAR INSCRIÇÃO (ESPECÍFICO) ---
+  async function deleteEnrollment(userId, monitoringId) {
+    if (!confirm("Remover inscrição deste aluno?")) return;
+    const res = await fetch(
+      `/api/${SECRET}/enrollments/${userId}/${monitoringId}`,
+      { method: "DELETE" }
+    );
+
+    if (res.ok) {
+      loadEnrollments();
+    } else {
+      alert("Erro ao remover inscrição.");
+    }
+  }
+</script>
+{% endblock %}

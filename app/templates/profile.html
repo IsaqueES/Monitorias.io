@@ -1,0 +1,105 @@
+{% extends "base.html" %} {% block content %}
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
+  <aside class="w-full md:w-1/3">
+    <div
+      class="bg-card border border-gray-800 rounded-2xl p-8 text-center sticky top-24"
+    >
+      <div
+        class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-gray-800 mb-6 shadow-xl"
+      >
+        <img
+          src="{{ user.profile_image }}"
+          alt="Profile"
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <h2 class="text-2xl font-bold text-white mb-1">{{ user.name }}</h2>
+      <p class="text-gray-500 text-sm mb-6">{{ user.email }}</p>
+
+      <a
+        href="/login"
+        class="block w-full py-2 px-4 border border-red-900 text-red-500 rounded hover:bg-red-900/20 transition-colors text-sm font-bold"
+      >
+        Sair da Conta
+      </a>
+    </div>
+  </aside>
+
+  <section class="w-full md:w-2/3">
+    <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+      <span class="w-2 h-8 bg-primary rounded-full block"></span>
+      Minhas Inscrições
+    </h2>
+
+    <div class="space-y-4">
+      {% for item in monitorings %}
+      <div
+        class="bg-card border border-gray-800 hover:border-gray-700 rounded-xl p-5 transition-all"
+      >
+        <div class="flex justify-between items-start">
+          <div>
+            <span
+              class="text-xs font-bold text-primary uppercase tracking-wide mb-1 block"
+            >
+              {{ item.monitorings.subjects.name }}
+            </span>
+            <h3 class="text-lg font-bold text-white">
+              {{ item.monitorings.monitor_name }}
+            </h3>
+            <p class="text-sm text-gray-400 mt-1">
+              {{ item.monitorings.schedule_day }} às {{
+              item.monitorings.schedule_time }}
+            </p>
+            <p class="text-xs text-gray-600 mt-2 flex items-center gap-1">
+              Local: {{ item.monitorings.room_or_link }}
+            </p>
+          </div>
+
+          <form action="/user/unsubscribe" method="post">
+            <input type="hidden" name="user_id" value="{{ user.id }}" />
+            <input
+              type="hidden"
+              name="monitoring_id"
+              value="{{ item.monitoring_id }}"
+            />
+            <button
+              type="submit"
+              class="text-gray-500 hover:text-red-500 transition-colors p-2"
+              title="Desinscrever-se"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+      {% else %}
+      <div
+        class="bg-card border border-gray-800 border-dashed rounded-xl p-10 text-center"
+      >
+        <p class="text-gray-500 mb-4">
+          Você ainda não se inscreveu em nenhuma monitoria.
+        </p>
+        <a
+          href="/home?user_id={{ user.id }}"
+          class="text-primary hover:underline"
+          >Explorar monitorias</a
+        >
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %} {% block content %}
+<div class="flex items-center justify-center min-h-[80vh]">
+  <div
+    class="w-full max-w-md bg-card border border-gray-800 rounded-2xl shadow-2xl overflow-hidden p-8"
+  >
+    <div class="flex mb-8 border-b border-gray-800">
+      <button
+        onclick="toggleTab('login')"
+        id="tab-login"
+        class="w-1/2 pb-3 text-primary border-b-2 border-primary font-medium transition-all"
+      >
+        Login
+      </button>
+      <button
+        onclick="toggleTab('register')"
+        id="tab-register"
+        class="w-1/2 pb-3 text-gray-500 font-medium hover:text-gray-300 transition-all"
+      >
+        Registrar-se
+      </button>
+    </div>
+
+    <form id="form-login" action="/login" method="post" class="space-y-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-400 mb-1"
+          >Email</label
+        >
+        <input
+          type="email"
+          name="email"
+          required
+          class="w-full bg-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-gray-600"
+          placeholder="seu@email.com"
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-400 mb-1"
+          >Senha</label
+        >
+        <input
+          type="password"
+          name="password"
+          required
+          class="w-full bg-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-gray-600"
+          placeholder="••••••••"
+        />
+      </div>
+      <button
+        type="submit"
+        class="w-full bg-primary hover:bg-primaryHover text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-purple-900/30"
+      >
+        Acessar
+      </button>
+    </form>
+
+    <form
+      id="form-register"
+      action="/register"
+      method="post"
+      class="space-y-6 hidden"
+    >
+      <div>
+        <label class="block text-sm font-medium text-gray-400 mb-1"
+          >Nome Completo</label
+        >
+        <input
+          type="text"
+          name="name"
+          required
+          class="w-full bg-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-gray-600"
+          placeholder="Ex: João Silva"
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-400 mb-1"
+          >Email</label
+        >
+        <input
+          type="email"
+          name="email"
+          required
+          class="w-full bg-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-gray-600"
+          placeholder="seu@email.com"
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-400 mb-1"
+          >Senha</label
+        >
+        <input
+          type="password"
+          name="password"
+          required
+          class="w-full bg-dark border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder-gray-600"
+          placeholder="Crie uma senha forte"
+        />
+      </div>
+      <button
+        type="submit"
+        class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 rounded-lg transition-all"
+      >
+        Criar Conta
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function toggleTab(tab) {
+    const loginForm = document.getElementById("form-login");
+    const regForm = document.getElementById("form-register");
+    const loginTab = document.getElementById("tab-login");
+    const regTab = document.getElementById("tab-register");
+
+    if (tab === "login") {
+      loginForm.classList.remove("hidden");
+      regForm.classList.add("hidden");
+      loginTab.classList.add("text-primary", "border-primary");
+      loginTab.classList.remove("text-gray-500");
+      regTab.classList.remove("text-primary", "border-primary");
+      regTab.classList.add("text-gray-500");
+    } else {
+      loginForm.classList.add("hidden");
+      regForm.classList.remove("hidden");
+      regTab.classList.add("text-primary", "border-primary");
+      regTab.classList.remove("text-gray-500");
+      loginTab.classList.remove("text-primary", "border-primary");
+      loginTab.classList.add("text-gray-500");
+    }
+  }
+</script>
+{% endblock %}

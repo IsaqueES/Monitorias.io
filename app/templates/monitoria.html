@@ -1,0 +1,212 @@
+{% extends "base.html" %} {% block content %}
+<div class="max-w-5xl mx-auto">
+  <div
+    class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4"
+  >
+    <div>
+      <h1 class="text-3xl font-bold text-white">
+        Monitorias de <span class="text-primary">{{ subject_name }}</span>
+      </h1>
+      <p class="text-gray-400 mt-1">
+        Encontre o horário ideal para seus estudos
+      </p>
+    </div>
+
+    <form method="get" class="w-full md:w-auto relative">
+      {% if user %}<input
+        type="hidden"
+        name="user_id"
+        value="{{ user.id }}"
+      />{% endif %}
+      <input
+        type="text"
+        name="q"
+        placeholder="Pesquisar monitor..."
+        class="bg-card border border-gray-700 rounded-full py-2 px-5 w-full md:w-64 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-white"
+      />
+      <button
+        type="submit"
+        class="absolute right-3 top-2.5 text-gray-500 hover:text-white"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          ></path>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <div class="grid gap-4">
+    {% for m in monitorings %}
+    <div
+      class="bg-card border border-gray-800 rounded-xl p-6 flex flex-col md:flex-row justify-between items-center hover:border-gray-600 transition-all group"
+    >
+      <div class="flex-1 space-y-2 mb-4 md:mb-0">
+        <div class="flex items-center gap-3">
+          <span
+            class="bg-purple-900/30 text-purple-300 text-xs font-bold px-2 py-1 rounded border border-purple-500/20"
+          >
+            {{ m.schedule_day }} • {{ m.schedule_time }}
+          </span>
+          <span class="text-gray-500 text-sm flex items-center gap-1">
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+            </svg>
+            {{ m.room_or_link }}
+          </span>
+        </div>
+        <h3 class="text-xl font-bold text-white">{{ m.monitor_name }}</h3>
+        <p class="text-sm text-gray-400">
+          Prof. Responsável: {{ m.professor_name }}
+        </p>
+      </div>
+
+      <div>
+        {% if user %}
+        <form
+          action="/monitoria/subscribe"
+          method="post"
+          onsubmit="return confirm('Tem certeza que deseja se inscrever na monitoria de {{ m.monitor_name }}?');"
+        >
+          <input type="hidden" name="user_id" value="{{ user.id }}" />
+          <input type="hidden" name="monitoring_id" value="{{ m.id }}" />
+          <input type="hidden" name="subject_id" value="{{ m.subject_id }}" />
+          <button
+            type="submit"
+            class="bg-white text-black hover:bg-primary hover:text-white font-bold py-2 px-6 rounded-lg transition-all transform active:scale-95 shadow-lg"
+          >
+            Inscrever-se
+          </button>
+        </form>
+        {% else %}
+        <a
+          href="/login"
+          class="text-sm text-gray-500 underline hover:text-primary"
+          >Faça login para inscrever-se</a
+        >
+        {% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="text-center py-20 text-gray-500">
+      <p>Nenhuma monitoria encontrada para esta matéria.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div
+  id="toast"
+  class="fixed bottom-5 right-5 transform translate-y-24 opacity-0 transition-all duration-500 z-50"
+>
+  <div
+    class="bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-green-400/30"
+  >
+    <div class="bg-white/20 rounded-full p-1">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="3"
+          d="M5 13l4 4L19 7"
+        />
+      </svg>
+    </div>
+    <div>
+      <h4 class="font-bold text-sm">Sucesso!</h4>
+      <p class="text-xs text-green-100">Inscrição realizada com sucesso.</p>
+    </div>
+  </div>
+</div>
+
+<div
+  id="toastError"
+  class="fixed bottom-5 right-5 transform translate-y-24 opacity-0 transition-all duration-500 z-50"
+>
+  <div
+    class="bg-red-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-red-400/30"
+  >
+    <div class="bg-white/20 rounded-full p-1">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="3"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </div>
+    <div>
+      <h4 class="font-bold text-sm">Atenção</h4>
+      <p class="text-xs text-red-100">Você já está inscrito nesta monitoria.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Verifica a URL quando a página carrega
+  document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get("status");
+
+    if (status === "success") {
+      showToast("toast");
+    } else if (status === "error") {
+      showToast("toastError");
+    }
+  });
+
+  function showToast(elementId) {
+    const el = document.getElementById(elementId);
+
+    // Faz aparecer (sobe e fica visível)
+    el.classList.remove("translate-y-24", "opacity-0");
+
+    // Espera 4 segundos e faz sumir
+    setTimeout(() => {
+      el.classList.add("translate-y-24", "opacity-0");
+    }, 4000);
+
+    // Limpa a URL para a mensagem não aparecer de novo se der F5
+    const newUrl = window.location.href.split("&status")[0];
+    window.history.replaceState({}, document.title, newUrl);
+  }
+</script>
+
+{% endblock %}
